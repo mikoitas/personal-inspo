@@ -1,0 +1,456 @@
+<!doctype html>
+<html lang="en" class="dark">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="robots" content="noindex" />
+<title>Personal inspo — mockup</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+<script>tailwind.config = { darkMode: 'class' };</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300..700&display=swap" rel="stylesheet">
+<style>
+  /* ===== Linear-inspired design tokens ===== */
+  :root{
+    --bg:#ffffff; --bg-elev:#fbfbfc; --bg-elev2:#f4f4f5;
+    --fg:#08090a; --muted:#60646c; --faint:#9ca0a8;
+    --border:rgba(0,0,0,.09); --border-strong:rgba(0,0,0,.14);
+    --card:#ffffff; --hover:#f4f4f5;
+    --accent:#5e6ad2; --accent-fg:#ffffff; --accent-soft:rgba(94,106,210,.12); --ring:rgba(94,106,210,.32);
+    --ease-spring: linear(0,.018,.07,.155,.267,.4,.54,.68,.805,.906,.974,1.012,1.03,1.034,1.03,1.02,1.008,1);
+  }
+  .dark{
+    --bg:#08090a; --bg-elev:#0f1011; --bg-elev2:#191a1d;
+    --fg:#f7f8f8; --muted:#8a8f98; --faint:#62666d;
+    --border:rgba(255,255,255,.08); --border-strong:rgba(255,255,255,.14);
+    --card:#0f1011; --hover:#191a1d;
+    --accent:#7c84e8; --accent-fg:#ffffff; --accent-soft:rgba(124,132,232,.16); --ring:rgba(124,132,232,.4);
+  }
+  *{ box-sizing:border-box; }
+  html,body{ background:var(--bg); color:var(--fg); }
+  body{ font-family:"Geist",ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; font-size:14px; line-height:1.5;
+    -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility; letter-spacing:-.006em; }
+  h1,h2,h3{ letter-spacing:-.019em; font-weight:560; }
+  .card{ background:var(--card); border:1px solid var(--border); }
+  .bd{ border-color:var(--border); }
+  .muted{ color:var(--muted); }
+  .hover-row:hover{ background:var(--hover); }
+  input::placeholder{ color:var(--faint); }
+  input,select,button{ font:inherit; color:inherit; }
+  .focusring:focus{ outline:none; box-shadow:0 0 0 3px var(--ring); border-color:var(--accent)!important; }
+  select{ -webkit-appearance:none; appearance:none; cursor:pointer;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%238a8f98' stroke-width='2'><path d='M6 9l6 6 6-6'/></svg>");
+    background-repeat:no-repeat; background-position:right .5rem center; }
+  /* Linear-style aurora glow at top */
+  .aurora{ position:fixed; top:0; left:0; right:0; height:460px; pointer-events:none; z-index:0;
+    background:radial-gradient(820px 340px at 50% -130px, var(--accent-soft), transparent 72%); }
+  .rail{ scrollbar-width:thin; } .rail::-webkit-scrollbar{ height:8px; } .rail::-webkit-scrollbar-thumb{ background:var(--border); border-radius:8px; }
+  [data-lucide]{ width:1rem; height:1rem; }
+  .cardimg{ transition: transform .5s var(--ease-spring); }
+  .group:hover .cardimg{ transform:scale(1.04); }
+
+  /* fallback gradient tile (only shows if a 3D icon fails) */
+  .cat3d{ width:1.4rem; height:1.4rem; border-radius:5px; display:inline-flex; align-items:center; justify-content:center; color:#fff; flex:0 0 auto;
+    background:linear-gradient(150deg, color-mix(in srgb, var(--c) 55%, #fff), var(--c) 70%); }
+  .cat3d [data-lucide]{ width:.85rem; height:.85rem; }
+
+  /* 3D category icon tile (6px radius) */
+  .ic3d{ width:1.9rem; height:1.9rem; border-radius:6px; flex:0 0 auto; display:inline-flex; align-items:center; justify-content:center;
+    background:var(--bg-elev2); border:1px solid var(--border); overflow:hidden; transition:border-color .2s ease; }
+  .ic3d > img{ width:1.35rem; height:1.35rem; object-fit:contain; transform-origin:50% 85%; will-change:transform; }
+  .sidecat:hover .ic3d{ border-color:var(--border-strong); }
+  .sidecat:hover .ic3d > img{ animation: iconBoop .5s var(--ease-spring); }   /* Comeau "boop": burst that settles back */
+  .sidecat:active .ic3d > img{ transform: scale(.9); }
+  .ic3d.pop > img{ animation: iconPop .55s var(--ease-spring); }
+  @keyframes iconBoop{ 0%{transform:none} 35%{transform:translateY(-2px) rotate(-8deg) scale(1.14)} 100%{transform:none} }
+  @keyframes iconPop{ 0%{transform:scale(.5) rotate(-14deg); opacity:.3} 100%{transform:none; opacity:1} }
+
+  /* sidebar items */
+  .sidecat{ color:var(--muted); transition: background .15s ease, color .15s ease; }
+  .sidecat:hover{ color:var(--fg); }
+  .sidecat.active{ color:var(--fg); background:var(--bg-elev2); }
+
+  /* cards: lift + staggered entrance */
+  .lift{ transition: transform .4s var(--ease-spring), border-color .2s ease, box-shadow .3s ease; }
+  .lift:hover{ transform:translateY(-3px); border-color:var(--border-strong); box-shadow:0 10px 34px rgba(0,0,0,.22); }
+  .tile-enter{ animation: enterUp .55s var(--ease-spring) both; animation-delay: calc(var(--i,0) * 26ms); }
+  @keyframes enterUp{ from{ opacity:0; transform:translateY(12px) scale(.985) } }
+  .visit{ transform-origin:center; }
+  .group:hover .visit{ animation: visitBoop .45s var(--ease-spring); }
+  @keyframes visitBoop{ 0%{transform:scale(.4); opacity:0} 60%{transform:scale(1.16) rotate(8deg)} 100%{transform:none; opacity:1} }
+
+  /* active pill / chip + primary button (Linear accent) */
+  .pill-active{ background:var(--accent)!important; color:var(--accent-fg)!important; border-color:var(--accent)!important; }
+  .btn-primary{ background:var(--accent); color:var(--accent-fg);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.16), 0 1px 2px rgba(0,0,0,.3); transition: filter .15s ease, transform .15s var(--ease-spring); }
+  .btn-primary:hover{ filter:brightness(1.08); }
+  .btn-primary:active{ transform:scale(.97); }
+
+  @media (min-width:1024px){ #cats{ display:none; } }
+  @media (prefers-reduced-motion: reduce){
+    .ic3d > img, .ic3d.pop > img, .lift, .tile-enter, .group:hover .visit, .cardimg{ animation:none!important; transition:none!important; }
+  }
+</style>
+</head>
+<body>
+<div class="aurora"></div>
+<div class="min-h-screen relative z-10">
+
+  <!-- Top bar -->
+  <header class="sticky top-0 z-30 backdrop-blur" style="background:color-mix(in srgb, var(--bg) 80%, transparent); border-bottom:1px solid var(--border);">
+    <div class="max-w-[1500px] mx-auto px-5">
+      <div class="flex items-center gap-3 h-16">
+        <div class="flex items-center gap-2 shrink-0">
+          <div class="w-7 h-7 rounded-lg flex items-center justify-center" style="background:var(--accent);box-shadow:inset 0 1px 0 rgba(255,255,255,.18);">
+            <span style="color:#fff;" data-lucide="sparkles"></span>
+          </div>
+          <span class="font-semibold tracking-tight text-[15px] hidden sm:block">Personal inspo</span>
+        </div>
+
+        <!-- Search -->
+        <div class="relative flex-1 max-w-xs">
+          <span class="absolute left-3 top-1/2 -translate-y-1/2 muted" data-lucide="search"></span>
+          <input id="search" type="text" placeholder="Search…"
+            class="w-full h-9 rounded-lg pl-9 pr-3 text-sm outline-none card focusring"/>
+        </div>
+
+        <div class="flex-1"></div>
+
+        <!-- Sort -->
+        <select id="sort" class="h-9 rounded-lg card text-sm pl-2.5 pr-7 outline-none cursor-pointer">
+          <option value="newest">Newest</option>
+          <option value="oldest">Oldest</option>
+          <option value="az">A – Z</option>
+        </select>
+
+        <!-- View toggle (Library only) -->
+        <div id="viewToggle" class="hidden md:flex items-center gap-1 p-1 rounded-lg card text-sm">
+          <button data-view="grid" class="vw px-2 py-1 rounded-md flex items-center" title="Grid"><span data-lucide="layout-grid"></span></button>
+          <button data-view="list" class="vw px-2 py-1 rounded-md flex items-center" title="List"><span data-lucide="list"></span></button>
+        </div>
+
+        <!-- Theme -->
+        <button id="themeBtn" class="w-9 h-9 rounded-lg card flex items-center justify-center shrink-0" title="Toggle theme">
+          <span data-lucide="sun"></span>
+        </button>
+      </div>
+
+      <!-- Category pills (Gallery / Editorial; mobile fallback) -->
+      <div id="cats" class="flex items-center gap-2 overflow-x-auto rail pb-3 pt-1"></div>
+    </div>
+  </header>
+
+  <!-- Content -->
+  <div class="max-w-[1500px] mx-auto px-5 flex gap-6">
+    <aside id="sidebar" class="hidden lg:block w-52 shrink-0 py-6 sticky self-start" style="top:4.5rem; max-height:calc(100vh - 4.5rem); overflow:auto;">
+      <div class="text-[11px] font-medium muted px-2.5 mb-2 uppercase tracking-wide">Categories</div>
+      <div id="catList" class="space-y-0.5"></div>
+    </aside>
+
+    <main class="flex-1 min-w-0 py-6">
+      <div id="chips" class="hidden flex-wrap items-center gap-2 mb-4"></div>
+      <div id="meta" class="muted text-sm mb-4"></div>
+      <div id="stage"></div>
+      <div id="empty" class="hidden text-center py-24">
+        <div class="muted mb-2 flex justify-center"><span data-lucide="search-x" style="width:2rem;height:2rem;"></span></div>
+        <p class="font-medium">No matches</p>
+        <p class="muted text-sm">Try another category or search term.</p>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- Detail modal -->
+<div id="modal" class="hidden fixed inset-0 z-50">
+  <div id="overlay" class="absolute inset-0" style="background:rgba(0,0,0,.55);"></div>
+  <div class="absolute inset-0 flex items-center justify-center p-4">
+    <div class="card rounded-2xl w-full max-w-3xl max-h-[88vh] overflow-hidden flex flex-col fade-in shadow-2xl">
+      <div class="overflow-auto"><img id="mImg" class="w-full" /></div>
+      <div class="p-5 border-t bd">
+        <div class="flex items-start justify-between gap-4">
+          <div class="min-w-0">
+            <h2 id="mTitle" class="text-lg font-semibold tracking-tight"></h2>
+            <p id="mCaption" class="muted text-sm mt-1"></p>
+          </div>
+          <button id="closeBtn" class="w-8 h-8 rounded-lg card flex items-center justify-center shrink-0"><span data-lucide="x"></span></button>
+        </div>
+        <div id="mKeywords" class="flex flex-wrap gap-1.5 mt-3"></div>
+        <div class="mt-4 flex items-center gap-2">
+          <span id="mCat"></span>
+          <a id="mLink" target="_blank" rel="noopener"
+             class="btn-primary inline-flex items-center gap-1.5 h-9 px-3.5 rounded-lg text-sm font-medium">
+            Visit source <span data-lucide="external-link"></span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const CAT_COLORS = {
+  "UI":"#6366f1","UX":"#ec4899","Typography":"#f59e0b","Colours":"#10b981",
+  "Animation":"#ef4444","Design Systems":"#8b5cf6","Icons":"#06b6d4",
+  "Illustrations":"#f97316","Prototypes":"#14b8a6","Landing Pages":"#3b82f6"
+};
+const CAT_ORDER = ["UI","UX","Typography","Colours","Animation","Design Systems","Icons","Landing Pages","Prototypes","Illustrations"];
+const CAT_ICONS = { "UI":"app-window","UX":"route","Typography":"type","Colours":"palette","Animation":"clapperboard","Design Systems":"blocks","Icons":"shapes","Landing Pages":"rocket","Prototypes":"pen-tool","Illustrations":"brush" };
+// Thiings 3D icons (thiings.co) — direct PNGs, loaded at runtime. Free for personal use.
+const THIINGS = "https://lftz25oez4aqbxpq.public.blob.vercel-storage.com/";
+const CAT_3D = {
+  "All":"image-6TJq3TblGrgJLKvMLFj3N2YcDEXG2A.png",            // Folder
+  "UI":"image-LxbDZUY1gzuzF4AEv0OHAqsSGpAng8.png",            // Smartphone
+  "UX":"image-lJtgyMsZAMhsOQy6TgetNuRXs9wjhj.png",            // Compass
+  "Typography":"image-Zj6Q1JUzHblyNwBHPS0Qnbc2gHS31c.png",    // Typewriter
+  "Colours":"image-WctLnuDk1OJ0wzB6A3ai0yTDzDJyOy.png",       // Artist palette
+  "Animation":"image-ZbBEZB0daxjTyV1p13g7cR6SEJhrRy.png",     // Movie clapperboard
+  "Design Systems":"image-Qv6Es5shxPeiCLWVEWmaF7e9HsImTw.png",// Toy brick
+  "Icons":"image-OhBdiUi1Ac3hO893KYRkNNtW2OQSs6.png",         // Star
+  "Landing Pages":"image-WtteJ2W5xSZ9e19zvN5b5x3ULLxCRH.png", // Rocket
+  "Prototypes":"image-q6MntkdofBNJX6YtyVOvAFVuSjUIRk.png",    // Blueprint
+  "Illustrations":"image-cJPmZcdC9Z6FpqJD2sWL1ufe3qEGmT.png"  // Paintbrush
+};
+
+let DATA = [];
+
+let state = { q:"", view:"grid", cats:[], sort:"newest", theme:"dark" };
+const $ = s => document.querySelector(s);
+const stage = $("#stage");
+window.refreshIcons = ()=> { try{ lucide.createIcons(); }catch(e){} };
+
+function dot(c){ return `<span style="width:.5rem;height:.5rem;border-radius:999px;display:inline-block;background:${CAT_COLORS[c]||'#999'}"></span>`; }
+function catIcon(c, pop){
+  const col = c==="All" ? "#71717a" : (CAT_COLORS[c]||"#999");
+  const ic  = c==="All" ? "layers" : (CAT_ICONS[c]||"square");
+  const url = THIINGS + (CAT_3D[c]||"");
+  // Thiings 3D icon; if it fails to load, fall back to the gradient tile.
+  return `<span class="ic3d${pop?' pop':''}">
+    <img src="${url}" alt="" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='inline-flex';">
+    <span class="cat3d" style="--c:${col};display:none"><span data-lucide="${ic}"></span></span>
+  </span>`;
+}
+function badge(c){ return `<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-xs font-medium card">${dot(c)}${c}</span>`; }
+function kwBadge(k){ return `<span class="px-2 py-0.5 rounded-md text-xs muted card">${k}</span>`; }
+function host(u){ try{ return new URL(u).hostname.replace(/^www\./,''); }catch(e){ return u; } }
+function favicon(h){ return `https://www.google.com/s2/favicons?domain=${h}&sz=64`; }
+function timeLabel(t){ return t.replace('.',':')+" PM"; }
+
+function items(){
+  const q = state.q.trim().toLowerCase();
+  let arr = DATA.filter(d=>{
+    if(state.cats.length && !state.cats.includes(d.cat)) return false;
+    if(!q) return true;
+    return (d.title+" "+d.cap+" "+d.kw.join(" ")+" "+d.cat).toLowerCase().includes(q);
+  });
+  if(state.sort==="oldest") arr = [...arr].reverse();
+  else if(state.sort==="az") arr = [...arr].sort((a,b)=> a.title.localeCompare(b.title));
+  return arr;
+}
+
+/* ---------- card variants ---------- */
+function pinCard(d, idx){
+  return `<div class="group cursor-pointer" data-open="${idx}">
+    <div class="relative overflow-hidden rounded-2xl">
+      <img class="cardimg w-full block" loading="lazy" src="${d.img}" alt="">
+      <div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200" style="background:linear-gradient(to top, rgba(0,0,0,.6), rgba(0,0,0,0) 45%);"></div>
+      <div class="absolute top-2 left-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">${badge(d.cat)}</div>
+      <a onclick="event.stopPropagation()" href="${d.src}" target="_blank" rel="noopener" title="Visit source"
+         class="absolute top-2 right-2 w-8 h-8 rounded-full bg-white text-black items-center justify-center hidden group-hover:flex shadow-md"><span data-lucide="arrow-up-right"></span></a>
+      <div class="absolute inset-x-0 bottom-0 p-2.5 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+        <div class="text-[13px] font-medium text-white truncate">${d.title}</div>
+        <div class="text-[11px] text-white/70 truncate">${host(d.src)}</div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function libCard(d, idx, pos){
+  const anim = pos>=0 ? "tile-enter" : "";
+  const styl = pos>=0 ? `style="--i:${pos}"` : "";
+  return `<div class="group cursor-pointer card rounded-xl overflow-hidden lift ${anim}" ${styl} data-open="${idx}">
+    <div class="relative overflow-hidden aspect-[16/10]">
+      <img class="cardimg w-full h-full object-cover object-top block" loading="lazy" src="${d.img}" alt="">
+      <div class="absolute top-2 left-2 opacity-0 group-hover:opacity-100 transition-opacity">${badge(d.cat)}</div>
+      <a onclick="event.stopPropagation()" href="${d.src}" target="_blank" rel="noopener" title="Visit source"
+         class="visit absolute top-2 right-2 w-8 h-8 rounded-full bg-white text-black items-center justify-center hidden group-hover:flex shadow-md"><span data-lucide="arrow-up-right"></span></a>
+    </div>
+    <div class="px-3 py-2.5 flex items-center gap-2.5">
+      <img class="w-4 h-4 rounded shrink-0" src="${favicon(host(d.src))}" onerror="this.style.visibility='hidden'">
+      <div class="min-w-0 flex-1">
+        <div class="text-sm font-medium truncate">${d.title}</div>
+        <div class="muted text-xs truncate">${host(d.src)}</div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function listRow(d, idx, pos){
+  const anim = pos>=0 ? "tile-enter" : "";
+  const styl = pos>=0 ? `style="--i:${pos}"` : "";
+  return `<div class="group cursor-pointer flex items-center gap-4 p-2.5 rounded-xl card hover-row ${anim}" ${styl} data-open="${idx}">
+    <img class="w-28 h-16 object-cover object-top rounded-lg shrink-0" loading="lazy" src="${d.img}" alt="">
+    <div class="min-w-0 flex-1">
+      <div class="text-sm font-medium truncate">${d.title}</div>
+      <div class="muted text-xs truncate flex items-center gap-1.5 mt-0.5">
+        <img class="w-3.5 h-3.5 rounded" src="${favicon(host(d.src))}" onerror="this.style.display='none'">${host(d.src)}
+      </div>
+    </div>
+    <div class="hidden sm:block">${badge(d.cat)}</div>
+    <div class="muted text-xs w-16 text-right hidden md:block">${d.date||''}</div>
+    <a onclick="event.stopPropagation()" href="${d.src}" target="_blank" rel="noopener" title="Visit source"
+       class="w-8 h-8 rounded-lg card flex items-center justify-center shrink-0"><span data-lucide="arrow-up-right"></span></a>
+  </div>`;
+}
+
+function railCard(d, idx){
+  return `<div class="group card rounded-xl overflow-hidden cursor-pointer shrink-0 w-72" data-open="${idx}">
+    <div class="relative overflow-hidden h-40">
+      <img class="cardimg w-full h-full object-cover object-top block" loading="lazy" src="${d.img}" alt="">
+      <div class="absolute top-2 left-2">${badge(d.cat)}</div>
+    </div>
+    <div class="px-3 py-2.5">
+      <div class="text-sm font-medium truncate">${d.title}</div>
+      <div class="muted text-xs truncate">${host(d.src)}</div>
+    </div>
+  </div>`;
+}
+
+function featured(d, idx){
+  return `<div class="group cursor-pointer relative rounded-2xl overflow-hidden mb-8" data-open="${idx}" style="aspect-ratio:21/9">
+    <img class="cardimg w-full h-full object-cover object-top" loading="lazy" src="${d.img}" alt="">
+    <div class="absolute inset-0" style="background:linear-gradient(to top, rgba(0,0,0,.72), transparent 60%)"></div>
+    <div class="absolute bottom-0 left-0 p-5">
+      <div class="mb-2">${badge(d.cat)}</div>
+      <div class="text-xl md:text-2xl font-semibold text-white">${d.title}</div>
+      <div class="text-sm text-white/70">${host(d.src)}</div>
+    </div>
+  </div>`;
+}
+
+/* ---------- render ---------- */
+function render(animate=true){
+  const list = items();
+  $("#meta").textContent = `${list.length} item${list.length!==1?"s":""}`;
+  renderChips();
+  $("#empty").classList.toggle("hidden", list.length>0);
+  stage.innerHTML = "";
+  if(list.length===0){ refreshIcons(); return; }
+
+  if(state.view==="list"){
+    stage.className = "space-y-2";
+    stage.innerHTML = list.map((d,i)=> listRow(d, DATA.indexOf(d), animate?i:-1)).join("");
+  } else {
+    stage.className = "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-4";
+    stage.innerHTML = list.map((d,i)=> libCard(d, DATA.indexOf(d), animate?i:-1)).join("");
+  }
+  bindOpens();
+  refreshIcons();
+}
+
+function bindOpens(){
+  stage.querySelectorAll("[data-open]").forEach(el=> el.addEventListener("click", ()=> openModal(+el.dataset.open)));
+}
+
+/* ---------- filters: pills + sidebar + chips ---------- */
+function isActive(c){ return c==="All" ? state.cats.length===0 : state.cats.includes(c); }
+
+function renderCats(){
+  const present = CAT_ORDER.filter(c=> DATA.some(d=>d.cat===c));
+  const all = ["All", ...present];
+  $("#cats").innerHTML = all.map(c=>{
+    const active = isActive(c);
+    return `<button data-cat="${c}" class="catpill shrink-0 inline-flex items-center gap-1.5 h-8 px-3 rounded-full text-sm border bd card ${active?'pill-active':''}">
+      ${c!=="All"?dot(c):""}${c}</button>`;
+  }).join("");
+  $("#cats").querySelectorAll(".catpill").forEach(b=> b.addEventListener("click", ()=> toggleCat(b.dataset.cat)));
+  refreshIcons();
+}
+
+function renderSidebar(){
+  const counts = {}; DATA.forEach(d=> counts[d.cat]=(counts[d.cat]||0)+1);
+  const present = CAT_ORDER.filter(c=> DATA.some(d=>d.cat===c));
+  const rows = [["All", DATA.length, null], ...present.map(c=>[c, counts[c], CAT_COLORS[c]])];
+  $("#catList").innerHTML = rows.map(([c,n,col])=>{
+    const active = isActive(c);
+    return `<button data-cat="${c}" class="sidecat w-full flex items-center gap-2.5 h-11 px-2 rounded-lg text-sm ${active?'active':'hover-row'}">
+      ${catIcon(c, active)}
+      <span class="flex-1 text-left truncate ${active?'font-medium':''}">${c}</span>
+      <span class="muted text-xs tabular-nums">${n}</span>
+    </button>`;
+  }).join("");
+  $("#catList").querySelectorAll(".sidecat").forEach(b=> b.addEventListener("click", ()=> toggleCat(b.dataset.cat)));
+  refreshIcons();
+}
+
+function renderChips(){
+  const wrap = $("#chips");
+  if(!state.cats.length){ wrap.innerHTML=""; wrap.classList.add("hidden"); return; }
+  wrap.classList.remove("hidden"); wrap.classList.add("flex");
+  wrap.innerHTML = `<span class="muted text-xs mr-1">Filtering:</span>` + state.cats.map(c=>
+    `<button data-rm="${c}" class="chip inline-flex items-center gap-1.5 h-7 px-2.5 rounded-full text-xs border bd card">${dot(c)}${c}<span data-lucide="x" style="width:.8rem;height:.8rem"></span></button>`
+  ).join("") + `<button id="clearCats" class="text-xs muted hover:underline ml-1">Clear all</button>`;
+  wrap.querySelectorAll(".chip").forEach(b=> b.addEventListener("click", ()=> toggleCat(b.dataset.rm)));
+  $("#clearCats").addEventListener("click", ()=>{ state.cats=[]; refreshAll(); });
+  refreshIcons();
+}
+
+function toggleCat(c){
+  if(c==="All"){ state.cats=[]; }
+  else { const i=state.cats.indexOf(c); if(i>=0) state.cats.splice(i,1); else state.cats.push(c); }
+  refreshAll();
+}
+function refreshAll(){ renderCats(); renderSidebar(); render(); }
+
+/* ---------- view ---------- */
+function paintView(){
+  document.querySelectorAll(".vw").forEach(b=>{
+    const on = b.dataset.view===state.view;
+    b.style.background = on ? "var(--fg)" : "transparent";
+    b.style.color = on ? "var(--bg)" : "var(--fg)";
+  });
+}
+
+/* ---------- modal ---------- */
+function openModal(i){
+  const d = DATA[i];
+  $("#mImg").src = d.img;
+  $("#mTitle").textContent = d.title;
+  $("#mCaption").textContent = d.cap;
+  $("#mKeywords").innerHTML = d.kw.map(kwBadge).join("");
+  $("#mCat").innerHTML = badge(d.cat);
+  $("#mLink").href = d.src;
+  $("#modal").classList.remove("hidden");
+  document.body.style.overflow="hidden";
+  refreshIcons();
+}
+function closeModal(){ $("#modal").classList.add("hidden"); document.body.style.overflow=""; }
+
+function loadData(){
+  return fetch('data/index.json').then(function(r){ if(!r.ok) throw 0; return r.json(); })
+    .catch(function(){ return new Promise(function(res){ var s=document.createElement('script'); s.src='data/index.js'; s.onload=function(){res(window.__INSPO__||[]);}; s.onerror=function(){res([]);}; document.head.appendChild(s); }); });
+}
+function adopt(raw){
+  return raw.map(function(o){ return { img:o.image, title:o.title, src:o.source_url||'', cat:o.category, cap:o.caption||'', kw:o.keywords||[], t:o.id, text:o.text||'', date:o.date||o.created_at||'' }; });
+}
+document.addEventListener("DOMContentLoaded", async ()=>{
+  DATA = adopt(await loadData());
+  renderCats(); renderSidebar(); paintView(); render(); refreshIcons();
+
+  $("#search").addEventListener("input", e=>{ state.q=e.target.value; render(false); });
+  $("#sort").addEventListener("change", e=>{ state.sort=e.target.value; render(); });
+  document.querySelectorAll(".vw").forEach(b=> b.addEventListener("click", ()=>{ state.view=b.dataset.view; paintView(); render(); }));
+  $("#themeBtn").addEventListener("click", ()=>{
+    state.theme = state.theme==="light" ? "dark":"light";
+    document.documentElement.classList.toggle("dark", state.theme==="dark");
+    $("#themeBtn").innerHTML = `<span data-lucide="${state.theme==='dark'?'sun':'moon'}"></span>`;
+    refreshIcons();
+  });
+  $("#closeBtn").addEventListener("click", closeModal);
+  $("#overlay").addEventListener("click", closeModal);
+  document.addEventListener("keydown", e=>{ if(e.key==="Escape") closeModal(); });
+});
+</script>
+</body>
+</html>
