@@ -16,9 +16,13 @@ You just need to (1) put this `site/` folder on GitHub as a **private** repo and
 3. Create repository. Leave the page open — you'll need the two commands it shows under "…push an existing repository".
 
 ### 2. Push this folder
-Open Terminal, then:
+Open Terminal, then (this starts git fresh on your Mac — see the note up top):
 ```bash
 cd "/Users/uxidbi/CLAUDE/Projects/Personal inspiration/site"
+rm -rf .git
+git init -b main
+git add -A
+git commit -m "Initial commit: Personal inspo site"
 git remote add origin https://github.com/mikoitas/personal-inspo.git
 git push -u origin main
 ```
