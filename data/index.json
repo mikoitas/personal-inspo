@@ -243,40 +243,6 @@
     "date": "Jun 13, 2026"
   },
   {
-    "id": "16",
-    "image": "data/images/16.jpg",
-    "title": "Coolors — green-grey palette",
-    "source_url": "https://coolors.co/5a5353-a07178-e6ccbe-776274-c8cc92",
-    "category": "Colours",
-    "caption": "Palette viewed in the Coolors editor",
-    "keywords": [
-      "palette",
-      "colour",
-      "generator",
-      "hex"
-    ],
-    "text": "",
-    "created_at": "2026-06-13T14:08:15",
-    "date": "Jun 13, 2026"
-  },
-  {
-    "id": "17",
-    "image": "data/images/17.jpg",
-    "title": "Coolors — Pale Slate to Dark Khaki",
-    "source_url": "https://coolors.co",
-    "category": "Colours",
-    "caption": "Full-screen 5-swatch palette with hex codes",
-    "keywords": [
-      "palette",
-      "colour",
-      "hex",
-      "swatches"
-    ],
-    "text": "",
-    "created_at": "2026-06-13T14:08:03",
-    "date": "Jun 13, 2026"
-  },
-  {
     "id": "18",
     "image": "data/images/18.jpg",
     "title": "Noun Project — renewable energy icons",
